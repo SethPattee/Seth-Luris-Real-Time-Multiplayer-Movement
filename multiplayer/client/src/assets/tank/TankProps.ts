@@ -1,13 +1,11 @@
 export interface TankProps {
-    id?:number;
+    id: number;
     xPosition: number;
     yPosition: number;
     rotation: number;
-    viewBox?: number;
-    stroke?: string;
-    width?: number;
-    left?: boolean;
-    right?: boolean;
-    foward: boolean;
-    backwards: boolean;
-}
+    forward: boolean;
+    backward: boolean;
+    left: boolean;
+    right: boolean;
+  }
+  

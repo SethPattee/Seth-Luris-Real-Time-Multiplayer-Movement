@@ -1,31 +1,30 @@
 import { TankProps } from "./TankProps";
 
-export const rotationAmount = 0.1;
-export const fowardAmount = 1;
+export const rotationSpeed = 5;
+export const moveSpeed = 5;
 
-export function moveVehicle(tank: TankProps) {
-    const newTank = { ...tank };
-  
-    if (tank.left) {
-        
-        newTank.rotation += rotationAmount;
-    }
+export function moveVehicle(tank: TankProps): TankProps {
+  const updatedTank = { ...tank };
 
-    if (tank.right) {
-        console.log("moving tank to turn right")
-        console.log(newTank.rotation)
-        newTank.rotation -= rotationAmount;
-    }
+  const rotationInRadians = (updatedTank.rotation * Math.PI) / 180;
 
-    if (tank.foward) {
-        newTank.xPosition += (fowardAmount* Math.cos(newTank.rotation));
-        newTank.yPosition += (fowardAmount * Math.sin(newTank.rotation));
-    }
+  if (tank.left) {
+    updatedTank.rotation += rotationSpeed;
+  }
 
-    if (tank.backwards) {
-        newTank.xPosition -= (fowardAmount* Math.cos(newTank.rotation));
-        newTank.yPosition -= (fowardAmount * Math.sin(newTank.rotation));
-    }
-  
-    return newTank;
+  if (tank.right) {
+    updatedTank.rotation -= rotationSpeed;
+  }
+
+  if (tank.forward) {
+    updatedTank.xPosition += Math.cos(rotationInRadians) * moveSpeed;
+    updatedTank.yPosition += Math.sin(rotationInRadians) * moveSpeed;
+  }
+
+  if (tank.backward) {
+    updatedTank.xPosition -= Math.cos(rotationInRadians) * moveSpeed;
+    updatedTank.yPosition -= Math.sin(rotationInRadians) * moveSpeed;
+  }
+
+  return updatedTank;
 }

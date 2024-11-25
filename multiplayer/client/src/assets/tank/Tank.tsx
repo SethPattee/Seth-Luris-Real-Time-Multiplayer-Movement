@@ -1,29 +1,24 @@
+import { useGameServer } from "./GameServerContext";
 import TankIcon from "./TankIcon";
 
+const Tank = () => {
+  const { tank } = useGameServer();
 
-
-function Tank() {
-    const xPosition = 30;
-    const yPosition = 30;
-    const rotation = 0;
-    const viewBox = 50;
   return (
-    <>
-      <div
-        style={{
-          position: "fixed",
-          rotate: `${rotation}deg`,
-          stroke: "#000000",
-          width: `${viewBox}px`,
-          height: `${viewBox}px`,
-          top: `${xPosition}px`,
-          left: `${yPosition}px`,
-        }}
-      >
-        <TankIcon />
-      </div>
-    </>
+
+    <div
+      style={{
+        position: "absolute",
+        width: "50px",
+        height: "50px",
+        top: `${tank.yPosition}px`,
+        left: `${tank.xPosition}px`,
+        transform: `rotate(${tank.rotation}deg)`,
+      }}>
+
+      <TankIcon />
+    </div>
   );
-}
+};
 
 export default Tank;

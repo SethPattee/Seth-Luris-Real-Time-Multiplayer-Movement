@@ -1,55 +1,54 @@
 import { useEffect } from "react";
 import { useGameServer } from "./GameServerContext";
 
-function PlayerControls() {
-  const gameconst = useGameServer();
+const PlayerControls = () => {
+  const { updateTankAction } = useGameServer();
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      console.log(e.key);
       switch (e.key) {
         case "w":
-          gameconst.updateVehicle(1, "moveForward");
+          updateTankAction("moveForward");
           break;
         case "s":
-          gameconst.updateVehicle(1, "moveBackward");
+          updateTankAction("moveBackward");
           break;
         case "a":
-          gameconst.updateVehicle(1, "turnLeft");
+          updateTankAction("turnLeft");
           break;
         case "d":
-          gameconst.updateVehicle(1, "turnRight");
+          updateTankAction("turnRight");
           break;
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      console.log(e.key);
       switch (e.key) {
         case "w":
-          gameconst.updateVehicle(1, "stopForwards");
+          updateTankAction("stopForward");
           break;
         case "s":
-          gameconst.updateVehicle(1, "stopBackwards");
+          updateTankAction("stopBackward");
           break;
         case "a":
-          gameconst.updateVehicle(1, "stopLeft");
+          updateTankAction("stopLeft");
           break;
         case "d":
-          gameconst.updateVehicle(1, "stopRight");
+          updateTankAction("stopRight");
           break;
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [gameconst]);
+  }, [updateTankAction]);
 
-  return <> </>;
-}
+  return null;
+};
 
 export default PlayerControls;
