@@ -1,13 +1,14 @@
 import "./App.css";
+import { GameServerProvider } from "./assets/tank/GameServerContext";
+import PlayerControls from "./assets/tank/PlayerControls";
 import Tank from "./assets/tank/Tank";
 
 function App() {
   return (
-    <>
-      <div>
-        <Tank></Tank>
-      </div>
-    </>
+    <GameServerProvider>
+      <PlayerControls/>
+        <Tank/>
+    </GameServerProvider>
   );
 }
 

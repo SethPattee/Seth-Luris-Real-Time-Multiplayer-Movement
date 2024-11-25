@@ -1,38 +1,41 @@
 import { useEffect } from "react";
-import { updateVehicle } from "./GameServerContext";
+import { useGameServer } from "./GameServerContext";
 
 function PlayerControls() {
+  const gameconst = useGameServer();
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      console.log(e.key);
       switch (e.key) {
         case "w":
-          updateVehicle(1, "moveForward");
+          gameconst.updateVehicle(1, "moveForward");
           break;
         case "s":
-          updateVehicle(1, "moveBackward");
+          gameconst.updateVehicle(1, "moveBackward");
           break;
         case "a":
-          updateVehicle(1, "turnLeft");
+          gameconst.updateVehicle(1, "turnLeft");
           break;
         case "d":
-          updateVehicle(1, "turnRight");
+          gameconst.updateVehicle(1, "turnRight");
           break;
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
+      console.log(e.key);
       switch (e.key) {
         case "w":
-          updateVehicle(1, "stopForwards");
+          gameconst.updateVehicle(1, "stopForwards");
           break;
         case "s":
-          updateVehicle(1, "stopBackwards");
+          gameconst.updateVehicle(1, "stopBackwards");
           break;
         case "a":
-          updateVehicle(1, "stopLeft");
+          gameconst.updateVehicle(1, "stopLeft");
           break;
         case "d":
-          updateVehicle(1, "stopRight");
+          gameconst.updateVehicle(1, "stopRight");
           break;
       }
     };
@@ -44,9 +47,9 @@ function PlayerControls() {
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [gameconst]);
 
-  return null;
+  return <> </>;
 }
 
 export default PlayerControls;

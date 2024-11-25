@@ -7,10 +7,13 @@ export function moveVehicle(tank: TankProps) {
     const newTank = { ...tank };
   
     if (tank.left) {
+        
         newTank.rotation += rotationAmount;
     }
 
     if (tank.right) {
+        console.log("moving tank to turn right")
+        console.log(newTank.rotation)
         newTank.rotation -= rotationAmount;
     }
 
