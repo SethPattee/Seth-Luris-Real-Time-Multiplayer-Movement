@@ -2,6 +2,10 @@ import { createContext, FC, ReactNode, useContext, useEffect, useState } from "r
 import { TankProps } from "./TankProps";
 import { moveVehicle } from "./vehicleUtils";
 
+
+
+
+
 interface GameServerContextType {
   tank: TankProps;
   updateTankAction: (
@@ -15,6 +19,7 @@ interface GameServerContextType {
       | "stopLeft"
       | "stopRight"
   ) => void;
+  // addTank: (tank: TankProps) => void;
 }
 
 const GameServerContext = createContext<GameServerContextType | null>(null);
@@ -22,6 +27,29 @@ const GameServerContext = createContext<GameServerContextType | null>(null);
 export const GameServerProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
+
+  const tank1: TankProps = {
+    id: 1,
+    xPosition: 100,
+    yPosition: 0,
+    rotation: 0,
+    forward: false,
+    backward: false,
+    left: false,
+    right: false
+  }
+  
+  const tank2: TankProps = {
+    id: 2,
+    xPosition: 0,
+    yPosition: 0,
+    rotation: 0,
+    forward: false,
+    backward: false,
+    left: false,
+    right: false
+  }
+  const [tanks, setTanks] = useState<TankProps[]>([tank1, tank2]);
   const [tank, setTank] = useState<TankProps>({
     id: 1,
     xPosition: 0,
@@ -85,6 +113,21 @@ export const GameServerProvider: FC<{ children: ReactNode }> = ({
 
     return () => clearInterval(gameLoop);
   }, []);
+
+  // const addTank = () => {
+  //   setTank((prevTank) => {
+  //     return {
+  //       id: prevTank.id + 1,
+  //       xPosition: 0,
+  //       yPosition: 0,
+  //       rotation: 0,
+  //       forward: false,
+  //       backward: false,
+  //       left: false,
+  //       right: false,
+  //     };
+  //   });
+  // }
 
   return (
     <GameServerContext.Provider value={{ tank, updateTankAction }}>
