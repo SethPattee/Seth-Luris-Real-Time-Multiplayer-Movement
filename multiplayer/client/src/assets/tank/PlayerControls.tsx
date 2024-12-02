@@ -19,20 +19,6 @@ const PlayerControls = () => {
         case "d":
           updateTankAction(1, "turnRight");
           break;
-
-        // Player 2 (IJKL)
-        case "i":
-          updateTankAction(2, "moveForward");
-          break;
-        case "k":
-          updateTankAction(2, "moveBackward");
-          break;
-        case "j":
-          updateTankAction(2, "turnLeft");
-          break;
-        case "l":
-          updateTankAction(2, "turnRight");
-          break;
       }
     };
 
@@ -50,20 +36,6 @@ const PlayerControls = () => {
           break;
         case "d":
           updateTankAction(1, "stopRight");
-          break;
-
-        // Player 2 (IJKL)
-        case "i":
-          updateTankAction(2, "stopForward");
-          break;
-        case "k":
-          updateTankAction(2, "stopBackward");
-          break;
-        case "j":
-          updateTankAction(2, "stopLeft");
-          break;
-        case "l":
-          updateTankAction(2, "stopRight");
           break;
       }
     };

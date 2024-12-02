@@ -44,7 +44,6 @@ app.Use(async (context, next) =>
 });
 
 app.Run();
-
 static async Task HandleWebSocketConnection(WebSocket webSocket, ConcurrentBag<WebSocket> clients)
 {
     var buffer = new byte[1024 * 4];
@@ -53,25 +52,22 @@ static async Task HandleWebSocketConnection(WebSocket webSocket, ConcurrentBag<W
     {
         while (webSocket.State == WebSocketState.Open)
         {
-            var receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
-            if (receiveResult.MessageType == WebSocketMessageType.Close)
+            if (result.MessageType == WebSocketMessageType.Close)
             {
                 break;
             }
 
-            string message = Encoding.UTF8.GetString(buffer, 0, receiveResult.Count);
+            var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
             Console.WriteLine($"Received: {message}");
 
             foreach (var client in clients)
             {
                 if (client != webSocket && client.State == WebSocketState.Open)
                 {
-                    await client.SendAsync(
-                        new ArraySegment<byte>(Encoding.UTF8.GetBytes(message)), 
-                        WebSocketMessageType.Text,
-                        true,
-                        CancellationToken.None);
+                    var data = Encoding.UTF8.GetBytes(message);
+                    await client.SendAsync(new ArraySegment<byte>(data), WebSocketMessageType.Text, true, CancellationToken.None);
                 }
             }
         }

@@ -29,8 +29,47 @@ export const GameServerProvider: FC<{ children: ReactNode }> = ({
     { id: 1, xPosition: 100, yPosition: 0, rotation: 0, forward: false, backward: false, left: false, right: false },
     { id: 2, xPosition: 0, yPosition: 100, rotation: 0, forward: false, backward: false, left: false, right: false },
   ];
-
+  const [socket, setSocket] = useState<WebSocket | undefined>(undefined);
+  const [inputMessage, setInputMessage] = useState<string>('');
   const [tanks, setTanks] = useState<TankProps[]>(initialTanks);
+
+  useEffect(() => {
+    const newSocket = new WebSocket('ws://localhost:5296/ws');
+
+    newSocket.addEventListener('open', () => {
+        console.log('WebSocket connection opened');
+    });
+
+    newSocket.addEventListener('message', (event) => {
+        console.log(`Message from server: ${event.data}`);
+        try {
+            setTanks(JSON.parse(event.data));
+        } catch (error) {
+            console.error('Error parsing WebSocket message:', error);
+        }
+    });
+
+    newSocket.addEventListener('close', () => {
+        console.log('WebSocket connection closed');
+    });
+
+    newSocket.addEventListener('error', (error) => {
+        console.error('WebSocket error:', error);
+    });
+
+    setSocket(newSocket);
+
+    return () => {
+        newSocket.close();
+    };
+}, []);
+
+const sendMessage = (message?: string) => {
+  if (socket) {
+      const payload = message ?? JSON.stringify(tanks);
+      socket.send(payload);
+  }
+};
 
   const updateTankAction = (
     tankId: number,
@@ -79,14 +118,23 @@ export const GameServerProvider: FC<{ children: ReactNode }> = ({
       })
     );
   };
-
   useEffect(() => {
     const gameLoop = setInterval(() => {
-      setTanks((prevTanks) => prevTanks.map((tank) => moveVehicle(tank)));
+        setTanks((prevTanks) => {
+            const updatedTanks = prevTanks.map((tank) => moveVehicle(tank));
+            sendMessage(JSON.stringify(updatedTanks));
+            return updatedTanks;
+        });
     }, 100);
-
+    const resetanks: TankProps[] = [
+      { id: 1, xPosition: tanks[0].xPosition, yPosition: tanks[0].yPosition, rotation: tanks[0].rotation, forward: false, backward: false, left: false, right: false },
+      { id: 2, xPosition: tanks[1].xPosition, yPosition: tanks[1].yPosition, rotation: tanks[1].rotation, forward: false, backward: false, left: false, right: false },
+    ];
+    setTanks(resetanks)
     return () => clearInterval(gameLoop);
-  }, []);
+}, [socket]);
+
+
 
   return (
     <GameServerContext.Provider value={{ tanks, updateTankAction }}>
