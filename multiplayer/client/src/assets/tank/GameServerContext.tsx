@@ -4,11 +4,10 @@ import { moveVehicle } from "./vehicleUtils";
 
 
 
-
-
 interface GameServerContextType {
-  tank: TankProps;
+  tanks: TankProps[];
   updateTankAction: (
+    tankId: number,
     action:
       | "moveForward"
       | "moveBackward"
@@ -19,7 +18,6 @@ interface GameServerContextType {
       | "stopLeft"
       | "stopRight"
   ) => void;
-  // addTank: (tank: TankProps) => void;
 }
 
 const GameServerContext = createContext<GameServerContextType | null>(null);
@@ -27,41 +25,15 @@ const GameServerContext = createContext<GameServerContextType | null>(null);
 export const GameServerProvider: FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  const initialTanks: TankProps[] = [
+    { id: 1, xPosition: 100, yPosition: 0, rotation: 0, forward: false, backward: false, left: false, right: false },
+    { id: 2, xPosition: 0, yPosition: 100, rotation: 0, forward: false, backward: false, left: false, right: false },
+  ];
 
-  const tank1: TankProps = {
-    id: 1,
-    xPosition: 100,
-    yPosition: 0,
-    rotation: 0,
-    forward: false,
-    backward: false,
-    left: false,
-    right: false
-  }
-  
-  const tank2: TankProps = {
-    id: 2,
-    xPosition: 0,
-    yPosition: 0,
-    rotation: 0,
-    forward: false,
-    backward: false,
-    left: false,
-    right: false
-  }
-  const [tanks, setTanks] = useState<TankProps[]>([tank1, tank2]);
-  const [tank, setTank] = useState<TankProps>({
-    id: 1,
-    xPosition: 0,
-    yPosition: 0,
-    rotation: 0,
-    forward: false,
-    backward: false,
-    left: false,
-    right: false,
-  });
+  const [tanks, setTanks] = useState<TankProps[]>(initialTanks);
 
   const updateTankAction = (
+    tankId: number,
     action:
       | "moveForward"
       | "moveBackward"
@@ -72,65 +44,52 @@ export const GameServerProvider: FC<{ children: ReactNode }> = ({
       | "stopLeft"
       | "stopRight"
   ) => {
-    setTank((prevTank) => {
-      const updatedTank = { ...prevTank };
-      switch (action) {
-        case "moveForward":
-          updatedTank.forward = true;
-          break;
-        case "moveBackward":
-          updatedTank.backward = true;
-          break;
-        case "turnLeft":
-          updatedTank.left = true;
-          break;
-        case "turnRight":
-          updatedTank.right = true;
-          break;
-        case "stopForward":
-          updatedTank.forward = false;
-          break;
-        case "stopBackward":
-          updatedTank.backward = false;
-          break;
-        case "stopLeft":
-          updatedTank.left = false;
-          break;
-        case "stopRight":
-          updatedTank.right = false;
-          break;
-        default:
-          break;
-      }
-      return updatedTank;
-    });
+    setTanks((prevTanks) =>
+      prevTanks.map((tank) => {
+        if (tank.id !== tankId) return tank;
+
+        const updatedTank = { ...tank };
+        switch (action) {
+          case "moveForward":
+            updatedTank.forward = true;
+            break;
+          case "moveBackward":
+            updatedTank.backward = true;
+            break;
+          case "turnLeft":
+            updatedTank.left = true;
+            break;
+          case "turnRight":
+            updatedTank.right = true;
+            break;
+          case "stopForward":
+            updatedTank.forward = false;
+            break;
+          case "stopBackward":
+            updatedTank.backward = false;
+            break;
+          case "stopLeft":
+            updatedTank.left = false;
+            break;
+          case "stopRight":
+            updatedTank.right = false;
+            break;
+        }
+        return updatedTank;
+      })
+    );
   };
 
   useEffect(() => {
     const gameLoop = setInterval(() => {
-      setTank((prevTank) => moveVehicle(prevTank));
+      setTanks((prevTanks) => prevTanks.map((tank) => moveVehicle(tank)));
     }, 100);
 
     return () => clearInterval(gameLoop);
   }, []);
 
-  // const addTank = () => {
-  //   setTank((prevTank) => {
-  //     return {
-  //       id: prevTank.id + 1,
-  //       xPosition: 0,
-  //       yPosition: 0,
-  //       rotation: 0,
-  //       forward: false,
-  //       backward: false,
-  //       left: false,
-  //       right: false,
-  //     };
-  //   });
-  // }
-
   return (
-    <GameServerContext.Provider value={{ tank, updateTankAction }}>
+    <GameServerContext.Provider value={{ tanks, updateTankAction }}>
       {children}
     </GameServerContext.Provider>
   );

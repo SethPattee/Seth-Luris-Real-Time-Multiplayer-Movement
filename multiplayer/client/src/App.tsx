@@ -28,11 +28,13 @@ const tank2: TankProps = {
 function App() {
   return (
     <GameServerProvider>
-      <PlayerControls/>
-      <Tank id={tank1.id} xPosition={tank1.xPosition} yPosition={tank1.yPosition} rotation={tank1.rotation} forward={tank1.forward} backward={tank1.backward} left={tank1.left} right={tank1.right} />
-      <Tank id={tank2.id} xPosition={tank2.xPosition} yPosition={tank2.yPosition} rotation={tank2.rotation} forward={tank2.forward} backward={tank2.backward} left={tank2.left} right={tank2.right} />
+      <PlayerControls />
+      <Tank id={1} />
+      <Tank id={2} />
     </GameServerProvider>
   );
 }
 
 export default App;
+
+

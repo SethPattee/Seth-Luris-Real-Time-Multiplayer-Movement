@@ -1,40 +1,69 @@
 import { useEffect } from "react";
 import { useGameServer } from "./GameServerContext";
-
 const PlayerControls = () => {
   const { updateTankAction } = useGameServer();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
+        // Player 1 (WASD)
         case "w":
-          updateTankAction("moveForward");
+          updateTankAction(1, "moveForward");
           break;
         case "s":
-          updateTankAction("moveBackward");
+          updateTankAction(1, "moveBackward");
           break;
         case "a":
-          updateTankAction("turnLeft");
+          updateTankAction(1, "turnLeft");
           break;
         case "d":
-          updateTankAction("turnRight");
+          updateTankAction(1, "turnRight");
+          break;
+
+        // Player 2 (IJKL)
+        case "i":
+          updateTankAction(2, "moveForward");
+          break;
+        case "k":
+          updateTankAction(2, "moveBackward");
+          break;
+        case "j":
+          updateTankAction(2, "turnLeft");
+          break;
+        case "l":
+          updateTankAction(2, "turnRight");
           break;
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
       switch (e.key) {
+        // Player 1 (WASD)
         case "w":
-          updateTankAction("stopForward");
+          updateTankAction(1, "stopForward");
           break;
         case "s":
-          updateTankAction("stopBackward");
+          updateTankAction(1, "stopBackward");
           break;
         case "a":
-          updateTankAction("stopLeft");
+          updateTankAction(1, "stopLeft");
           break;
         case "d":
-          updateTankAction("stopRight");
+          updateTankAction(1, "stopRight");
+          break;
+
+        // Player 2 (IJKL)
+        case "i":
+          updateTankAction(2, "stopForward");
+          break;
+        case "k":
+          updateTankAction(2, "stopBackward");
+          break;
+        case "j":
+          updateTankAction(2, "stopLeft");
+          break;
+        case "l":
+          updateTankAction(2, "stopRight");
           break;
       }
     };

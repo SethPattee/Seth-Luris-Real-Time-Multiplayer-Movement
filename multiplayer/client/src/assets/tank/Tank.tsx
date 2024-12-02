@@ -2,10 +2,13 @@ import { useGameServer } from "./GameServerContext";
 import TankIcon from "./TankIcon";
 import { TankProps } from "./TankProps";
 
-const Tank = (tanks: TankProps)  => {
-  const { tank } = useGameServer();
-  return (
+const Tank = ({ id }: { id: number }) => {
+  const { tanks } = useGameServer();
+  const tank = tanks.find((t) => t.id === id);
 
+  if (!tank) return null;
+
+  return (
     <div
       style={{
         position: "absolute",
@@ -14,8 +17,9 @@ const Tank = (tanks: TankProps)  => {
         top: `${tank.yPosition}px`,
         left: `${tank.xPosition}px`,
         transform: `rotate(${tank.rotation}deg)`,
-      }}>
-
+        backgroundColor: id === 1 ? "blue" : "red",
+      }}
+    >
       <TankIcon />
     </div>
   );
