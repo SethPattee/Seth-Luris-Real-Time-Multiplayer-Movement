@@ -1,6 +1,5 @@
 import { useGameServer } from "./GameServerContext";
 import TankIcon from "./TankIcon";
-import { TankProps } from "./TankProps";
 
 const Tank = ({ id }: { id: number }) => {
   const { tanks } = useGameServer();

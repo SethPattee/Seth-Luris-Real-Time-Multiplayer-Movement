@@ -1,16 +1,15 @@
 import { useState } from "react";
 import "./App.css";
 import { GameServerProvider } from "./assets/tank/GameServerContext";
+import { GameClientProvider } from "./assets/tank/GameClientContext";
 import PlayerControls from "./assets/tank/PlayerControls";
 import Tank from "./assets/tank/Tank";
-import { TankProps } from "./assets/tank/TankProps";
 import GameClient from "./assets/tank/GameClient";
-import { GameClientProvider } from "./assets/tank/GameClientContext";
 
 function App() {
   const [role, setRole] = useState<"server" | "client" | null>(null);
 
-  if (!role) {
+  if (role === null) {
     return (
       <div>
         <h1>Select Role</h1>
@@ -28,9 +27,7 @@ function App() {
     </GameServerProvider>
   ) : (
     <GameClientProvider>
-    <GameClient>
-      {/* <PlayerControls />  need a client version of this */} 
-    </GameClient>
+      <GameClient />
     </GameClientProvider>
   );
 }

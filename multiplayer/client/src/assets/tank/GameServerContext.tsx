@@ -2,8 +2,6 @@ import { createContext, FC, ReactNode, useContext, useEffect, useState } from "r
 import { TankProps } from "./TankProps";
 import { moveVehicle } from "./vehicleUtils";
 
-
-
 interface GameServerContextType {
   tanks: TankProps[];
   updateTankAction: (
@@ -30,46 +28,49 @@ export const GameServerProvider: FC<{ children: ReactNode }> = ({
     { id: 2, xPosition: 0, yPosition: 100, rotation: 0, forward: false, backward: false, left: false, right: false },
   ];
   const [socket, setSocket] = useState<WebSocket | undefined>(undefined);
-  const [inputMessage, setInputMessage] = useState<string>('');
+  // const [inputMessage, setInputMessage] = useState<string>(''); I dont think we need this Seth
   const [tanks, setTanks] = useState<TankProps[]>(initialTanks);
 
   useEffect(() => {
-    const newSocket = new WebSocket('ws://localhost:5296/ws');
+    const newSocket = new WebSocket('ws://localhost:5000/ws');
 
     newSocket.addEventListener('open', () => {
-        console.log('WebSocket connection opened');
-    });
-
-    newSocket.addEventListener('message', (event) => {
-        console.log(`Message from server: ${event.data}`);
-        try {
-            setTanks(JSON.parse(event.data));
-        } catch (error) {
-            console.error('Error parsing WebSocket message:', error);
-        }
+      console.log('WebSocket connection opened');
     });
 
     newSocket.addEventListener('close', () => {
-        console.log('WebSocket connection closed');
+      console.log('WebSocket connection closed');
     });
 
     newSocket.addEventListener('error', (error) => {
-        console.error('WebSocket error:', error);
+      console.error('WebSocket error:', error);
+    });
+
+    newSocket.addEventListener('message', (event) => {
+      try {
+        const gameState = JSON.parse(event.data);
+        setTanks(gameState);
+      } catch (error) {
+        console.error('Failed to parse game state:', error);
+      }
     });
 
     setSocket(newSocket);
 
     return () => {
-        newSocket.close();
+      newSocket.close();
+      console.log('WebSocket connection cleanup');
     };
-}, []);
+  }, []);
 
-const sendMessage = (message?: string) => {
-  if (socket) {
-      const payload = message ?? JSON.stringify(tanks);
+  const sendMessage = (message?: string, type: string = "GameState") => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      const payload = JSON.stringify({ type, data: message ?? tanks });
       socket.send(payload);
-  }
-};
+    } else {
+      console.warn("WebSocket is not open. Message not sent.");
+    }
+  };
 
   const updateTankAction = (
     tankId: number,
@@ -120,16 +121,14 @@ const sendMessage = (message?: string) => {
   };
   useEffect(() => {
     const gameLoop = setInterval(() => {
-        setTanks((prevTanks) => {
-            const updatedTanks = prevTanks.map((tank) => moveVehicle(tank));
-            sendMessage(JSON.stringify(updatedTanks));
-            return updatedTanks;
-        });
+      setTanks((prevTanks) => {
+        const updatedTanks = prevTanks.map((tank) => moveVehicle(tank));
+        sendMessage(JSON.stringify(updatedTanks), "GameState");
+        return updatedTanks;
+      });
     }, 100);
     return () => clearInterval(gameLoop);
-}, [socket]);
-
-
+  }, [socket]);
 
   return (
     <GameServerContext.Provider value={{ tanks, updateTankAction }}>
