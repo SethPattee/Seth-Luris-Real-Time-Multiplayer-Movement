@@ -126,11 +126,6 @@ const sendMessage = (message?: string) => {
             return updatedTanks;
         });
     }, 100);
-    const resetanks: TankProps[] = [
-      { id: 1, xPosition: tanks[0].xPosition, yPosition: tanks[0].yPosition, rotation: tanks[0].rotation, forward: false, backward: false, left: false, right: false },
-      { id: 2, xPosition: tanks[1].xPosition, yPosition: tanks[1].yPosition, rotation: tanks[1].rotation, forward: false, backward: false, left: false, right: false },
-    ];
-    setTanks(resetanks)
     return () => clearInterval(gameLoop);
 }, [socket]);
 

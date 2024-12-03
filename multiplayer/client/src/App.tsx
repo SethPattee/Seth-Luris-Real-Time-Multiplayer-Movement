@@ -1,40 +1,38 @@
+import { useState } from "react";
 import "./App.css";
 import { GameServerProvider } from "./assets/tank/GameServerContext";
 import PlayerControls from "./assets/tank/PlayerControls";
 import Tank from "./assets/tank/Tank";
 import { TankProps } from "./assets/tank/TankProps";
+import GameClient from "./assets/tank/GameClient";
+import { GameClientProvider } from "./assets/tank/GameClientContext";
 
-const tank1: TankProps = {
-  id: 1,
-  xPosition: 100,
-  yPosition: 0,
-  rotation: 0,
-  forward: false,
-  backward: false,
-  left: false,
-  right: false
-}
-
-const tank2: TankProps = {
-  id: 2,
-  xPosition: 0,
-  yPosition: 0,
-  rotation: 0,
-  forward: false,
-  backward: false,
-  left: false,
-  right: false
-}
 function App() {
-  return (
+  const [role, setRole] = useState<"server" | "client" | null>(null);
+
+  if (!role) {
+    return (
+      <div>
+        <h1>Select Role</h1>
+        <button onClick={() => setRole("server")}>Start as Server</button>
+        <button onClick={() => setRole("client")}>Join as Client</button>
+      </div>
+    );
+  }
+
+  return role === "server" ? (
     <GameServerProvider>
       <PlayerControls />
       <Tank id={1} />
       <Tank id={2} />
     </GameServerProvider>
+  ) : (
+    <GameClientProvider>
+    <GameClient>
+      {/* <PlayerControls />  need a client version of this */} 
+    </GameClient>
+    </GameClientProvider>
   );
 }
 
 export default App;
-
-
