@@ -28,7 +28,6 @@ export const GameServerProvider: FC<{ children: ReactNode }> = ({
     { id: 2, xPosition: 0, yPosition: 100, rotation: 0, forward: false, backward: false, left: false, right: false },
   ];
   const [socket, setSocket] = useState<WebSocket | undefined>(undefined);
-  // const [inputMessage, setInputMessage] = useState<string>(''); I dont think we need this Seth
   const [tanks, setTanks] = useState<TankProps[]>(initialTanks);
 
   useEffect(() => {
@@ -36,22 +35,18 @@ export const GameServerProvider: FC<{ children: ReactNode }> = ({
 
     newSocket.addEventListener('open', () => {
       console.log('WebSocket connection opened');
-    });
-
-    newSocket.addEventListener('close', () => {
-      console.log('WebSocket connection closed');
-    });
-
-    newSocket.addEventListener('error', (error) => {
-      console.error('WebSocket error:', error);
+      newSocket.send(JSON.stringify({ type: 'GameState', data: initialTanks }));
     });
 
     newSocket.addEventListener('message', (event) => {
       try {
-        const gameState = JSON.parse(event.data);
-        setTanks(gameState);
+        const message = JSON.parse(event.data);
+        
+        if (message.type === 'TankAction') {
+          updateTankAction(message.tankId, message.action);
+        }
       } catch (error) {
-        console.error('Failed to parse game state:', error);
+        console.error('Failed to parse message:', error);
       }
     });
 
@@ -63,12 +58,9 @@ export const GameServerProvider: FC<{ children: ReactNode }> = ({
     };
   }, []);
 
-  const sendMessage = (message?: string, type: string = "GameState") => {
+  const sendGameState = (updatedTanks: TankProps[]) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
-      const payload = JSON.stringify({ type, data: message ?? tanks });
-      socket.send(payload);
-    } else {
-      console.warn("WebSocket is not open. Message not sent.");
+      socket.send(JSON.stringify({ type: 'GameState', data: updatedTanks }));
     }
   };
 
@@ -119,16 +111,17 @@ export const GameServerProvider: FC<{ children: ReactNode }> = ({
       })
     );
   };
+
   useEffect(() => {
     const gameLoop = setInterval(() => {
       setTanks((prevTanks) => {
         const updatedTanks = prevTanks.map((tank) => moveVehicle(tank));
-        sendMessage(JSON.stringify(updatedTanks), "GameState");
+        sendGameState(updatedTanks);
         return updatedTanks;
       });
     }, 100);
     return () => clearInterval(gameLoop);
-  }, [socket]);
+  }, []);
 
   return (
     <GameServerContext.Provider value={{ tanks, updateTankAction }}>

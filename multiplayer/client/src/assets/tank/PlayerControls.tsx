@@ -20,20 +20,6 @@ const PlayerControls = () => {
         case "d":
           updateTankAction(1, "turnRight");
           break;
-
-        // Player 2
-        case "ArrowUp":
-          updateTankAction(2, "moveForward");
-          break;
-        case "ArrowDown":
-          updateTankAction(2, "moveBackward");
-          break;
-        case "ArrowLeft":
-          updateTankAction(2, "turnLeft");
-          break;
-        case "ArrowRight":
-          updateTankAction(2, "turnRight");
-          break;
       }
     };
 
@@ -51,20 +37,6 @@ const PlayerControls = () => {
           break;
         case "d":
           updateTankAction(1, "stopRight");
-          break;
-
-        // Player 2 
-        case "ArrowUp":
-          updateTankAction(2, "stopForward");
-          break;
-        case "ArrowDown":
-          updateTankAction(2, "stopBackward");
-          break;
-        case "ArrowLeft":
-          updateTankAction(2, "stopLeft");
-          break;
-        case "ArrowRight":
-          updateTankAction(2, "stopRight");
           break;
       }
     };
