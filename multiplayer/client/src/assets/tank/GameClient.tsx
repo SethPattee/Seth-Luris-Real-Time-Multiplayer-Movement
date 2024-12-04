@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useGameClient } from "./GameClientContext";
 import Tank from "./Tank";
+import TankIcon from "./TankIcon";
 
 const GameClient = () => {
   const { tanks, updateTankAction, connectionStatus } = useGameClient();
@@ -63,10 +64,33 @@ const GameClient = () => {
   return (
     <div>
       {tanks.map((tank) => (
-        <Tank key={tank.id} {...tank} />
+        <TankClient key={tank.id} {...tank} />
       ))}
     </div>
   );
 };
 
 export default GameClient;
+
+const TankClient = ({ id }: { id: number }) => {
+  const { tanks } = useGameClient();
+  const tank = tanks.find((t) => t.id === id);
+
+  if (!tank) return null;
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        width: "50px",
+        height: "50px",
+        top: `${tank.yPosition}px`,
+        left: `${tank.xPosition}px`,
+        transform: `rotate(${tank.rotation}deg)`,
+        backgroundColor: id === 1 ? "blue" : "red",
+      }}
+    >
+      <TankIcon />
+    </div>
+  );
+};

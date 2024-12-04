@@ -62,6 +62,9 @@ export const GameServerProvider: FC<{ children: ReactNode }> = ({
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify({ type: 'GameState', data: updatedTanks }));
     }
+    else{
+      console.log('WebSocket is not open');
+    }
   };
 
   const updateTankAction = (
@@ -116,12 +119,14 @@ export const GameServerProvider: FC<{ children: ReactNode }> = ({
     const gameLoop = setInterval(() => {
       setTanks((prevTanks) => {
         const updatedTanks = prevTanks.map((tank) => moveVehicle(tank));
-        sendGameState(updatedTanks);
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify({ type: 'GameState', data: updatedTanks }));
+        }
         return updatedTanks;
       });
     }, 100);
     return () => clearInterval(gameLoop);
-  }, []);
+  }, [socket]);
 
   return (
     <GameServerContext.Provider value={{ tanks, updateTankAction }}>
